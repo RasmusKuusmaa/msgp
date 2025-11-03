@@ -11,7 +11,7 @@ const start = async () => {
         console.log("server running at 3000");
     }
     catch (err) {
-        app.log(err);
+        app.log.error(err);
         process.exit(1);
     }
 };
