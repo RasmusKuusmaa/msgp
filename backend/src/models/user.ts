@@ -2,13 +2,14 @@ import { error } from "console";
 import { pool } from "../db";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
+import { RowDataPacket } from "mysql2";
 export interface User {
   userId: number;
   userName: string;
 }
 
 export async function getAllUsers(): Promise<User[]> {
-  const [rows] = await pool.query<User[]>(
+  const [rows] = await pool.query<RowDataPacket[] & User[]>(
     "SELECT user_id, user_name from users"
   );
   return rows;
