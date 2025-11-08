@@ -2,9 +2,10 @@ import { FastifyInstance } from "fastify";
 import { getAllUsers, loginUser, registerUser } from "../models/user";
 import { error } from "console";
 import { request } from "http";
+import { authenticate } from "../middleware/auth";
 
 export default async function userRoutes(app: FastifyInstance) {
-  app.get("/users", async (request, reply) => {
+  app.get("/users", {preHandler: authenticate} , async (request, reply) => {
     try {
       const users = await getAllUsers();
       return { users };
