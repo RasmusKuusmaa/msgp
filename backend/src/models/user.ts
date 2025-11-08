@@ -26,3 +26,24 @@ export async function registerUser(userName: string, password: string) {
   return { message: "user registered" };
 }
 
+export async function loginUser(userName: string, password: string) {
+  const [rows] = await pool.query<any[]>(
+    "SELECT user_id, user_name, password from users where user_name = ?",
+    [userName]
+  );
+
+  if (rows.length === 0) throw new Error("user not found");
+
+  const user = rows[0];
+
+  const isMatch = await bcrypt.compare(password, user.password);
+  if (!isMatch) throw new Error("invalid password");
+
+  const token = jwt.sign(
+    { userId: user.user_id, userName },
+    process.env.JWT_SECRET!,
+    { expiresIn: "1h" }
+  );
+
+  return { token };
+}
